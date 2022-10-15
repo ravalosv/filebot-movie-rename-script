@@ -1,15 +1,11 @@
-{(hd == 'UHD'? "Z:\\My Media\\Peliculas 4k\\":"Z:\\My Media\\Alpha\\" )}
+{(hd == 'UHD'? "T:\\My Media\\Peliculas 4k\\":"T:\\My Media\\Alpha\\" )}
 {az}/
 {ny} { " {tmdb-$tmdbid}" }/{ny} [tmdbid-{tmdbid}] - 
 {
-	(hd == 'SD') ? {any{text.size()}{0} > 0 ? '[SD]':'[SD]'} :
-    	(hd == 'UHD') ? ( ((bytes/1073741824).round(1) > 30 && bitrate >= 26000000 ? '[4K]' : {any{text.size()}{0} > 0 ? '[4K]':'[4K]'})) :
+	(hd == 'SD') ? '[SD]' :
+    	(hd == 'UHD') ? '[4K]' :
     	(hd == 'HD' && vf == '720p') ? '[720p]' :
-    	(hd == 'HD' && vf == '[1080p' ? 
-            ((bytes/1073741824).round(1) > 15 && bitrate >= 18000000) ? '[1080p]' : 
-            (bitrate > 8000000) ? {any{text.size()}{0} > 0 ? '[1080p]':'[1080p]'} : {any{text.size()}{0} > 0 ? '[1080p]':'[1080p]'} :
-            {any{text.size()}{0} > 0 ? '[1080p]':'[1080p]'} )
-	
+    	(hd == 'HD' && vf == '1080p') ? '[1080p]' : '[1080p]'
 }
  [{ import java.math.RoundingMode
   import net.filebot.Language

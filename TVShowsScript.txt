@@ -1,0 +1,21 @@
+{(hd == 'UHD'? "M:\\My Media\\Series Ingles 4k\\":"M:\\My Media 2\\Descargas\\" )}
+
+{ny}/{episode.special ? 'Specials' : 'Season '+s.pad(2)}/{n} - {episode.special ? 'S00E'+special.pad(2) : s00e00} - {t.replaceAll(/[`´‘’ʻ]/, /'/).replaceAll(/[!?.]+$/).replacePart(', Part $1')}{'.'+lang} {
+    (hd == 'SD') ? {any{text.size()}{0} > 0 ? '[SD][Dual]':'[SD][ES]'} :
+    (hd == 'UHD') ? ( ((bytes/1073741824).round(1) > 30 && bitrate >= 26000000 ? '[4K UHDremux]' : {any{text.size()}{0} > 0 ? '[4K MicroUHD]':'[4K MicroUHD] [ES]'})) :
+    (hd == 'HD' && vf == '720p') ? {any{text.size()}{0} > 0 ? '[720p][Dual]':'[720p][ES]'} :
+    (hd == 'HD' && vf == '1080p' ? 
+            ((bytes/1073741824).round(1) > 15 && bitrate >= 18000000) ? '[1080p BDremux]' : 
+            (bitrate > 8000000) ? {any{text.size()}{0} > 0 ? '[1080p BDrip]':'[1080p BDrip] [ES]'} : {any{text.size()}{0} > 0 ? '[1080p MicroHD]':'[1080p MicroHD] [ES]'} :
+            {any{text.size()}{0} > 0 ? '[1080p MicroHD]':'[1080p MicroHD] [ES]'}            
+    )
+} [{vc.replace('AVC', 'x264')}] [{ import java.math.RoundingMode
+  import net.filebot.Language
+  audio.collect {
+    def au = it
+    def channels = any{ au['ChannelPositions/String2'] }{ au['Channel(s)_Original'] }{ au['Channel(s)'] } 
+    def ch = channels.tokenize('\\/')*.toDouble().inject(0, { a, b -> a + b }).findAll { it > 0 }
+                     .max().toBigDecimal().setScale(1, RoundingMode.HALF_UP).toString()
+    def codec = any{ au['CodecID/Hint'] }{ au['Format'] }.replaceAll(/['`´‘’ʻ\p{Punct}\p{Space}]/, '')
+    return [ch, Language.findLanguage(au['Language']).ISO3.upperInitial()]
+  }*.join(" ").join(", ") }] [{mbps}]
