@@ -1,4 +1,7 @@
-{(hd == 'UHD'? "T:\\My Media\\Peliculas 4k\\":"T:\\My Media\\Alpha\\" )}
+{(hd == 'UHD'? "M:\\My Media\\Peliculas 4k\\":
+	(hd == 'HD' && vf == '1080p' && (mbps.replaceAll(' Mbps') as double) >= 6)? //peliculas HD, 1080p con mas de 6 Mbps de bitrate
+		"M:\\My Media 4\\Plex\\PEHD\\":
+		"M:\\My Media\\Alpha\\" )}
 {az}/
 {ny} { " {tmdb-$tmdbid}" }/{ny} [tmdbid-{tmdbid}] - 
 {
@@ -16,4 +19,4 @@
                      .max().toBigDecimal().setScale(1, RoundingMode.HALF_UP).toString()
     def codec = any{ au['CodecID/Hint'] }{ au['Format'] }.replaceAll(/['`´‘’ʻ\p{Punct}\p{Space}]/, '')
     return [ch, Language.findLanguage(au['Language']).ISO3.upperInitial()]
-  }*.join(" ").join(", ") }] {(fps >= 60)? '[60 fps]' : '' } [{mbps}]
+  }*.join(" ").join(", ") }] [{fps} fps] [{mbps}]
